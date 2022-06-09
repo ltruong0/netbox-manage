@@ -1,0 +1,29 @@
+---
+- name: Clone Netbox Docker Repo
+  ansible.builtin.git:
+    repo: 'https://github.com/netbox-community/netbox-docker.git'
+    dest: "{{ansible_user_dir}}/netbox-docker"
+    version: 1.6.1
+
+
+- name: Update Default Env Configs
+  ansible.builtin.template:
+    src: "{{item}}.j2"
+    dest: "{{ansible_user_dir}}/netbox-docker/{{item}}.env"
+  loop:
+    - netbox
+    - postgres
+    - redis-cache
+    - redis
+
+- name: Update Docker-Compose
+  ansible.builtin.template:
+    src: docker-compose.override.j2
+    dest: "{{ansible_user_dir}}/netbox-docker/docker-compose.override.yml"
+
+
+- name: Start Containers
+  community.docker.docker_compose:
+    project_src: "{{ansible_user_dir}}/netbox-docker"
+    files:
+      - docker-compose.yml

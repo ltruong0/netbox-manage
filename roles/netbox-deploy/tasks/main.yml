@@ -1,0 +1,10 @@
+---
+# tasks file for netbox-deploy
+- name: "Install Pre-Reqs"
+  include_tasks:
+    file: "{{ansible_distribution | lower}}_pre-reqs.yml"
+  
+- name: "Deploy Netbox"
+  include_tasks:
+    file: "netbox_deploy.yml"
+    

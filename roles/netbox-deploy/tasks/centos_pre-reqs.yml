@@ -1,0 +1,54 @@
+
+- name: Install yum utils
+  become: true
+  ansible.builtin.yum:
+    name: yum-utils
+    state: present
+
+- name: "Configuring docker-ce repo"
+  become: true
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+    mode: 0644
+
+- name: Install Docker and Components
+  become: true
+  ansible.builtin.yum:
+    name: "{{component}}"
+    state: present
+    update_cache: yes
+  loop:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+    - docker-compose-plugin
+    - python3-pip
+    - python-setuptools
+    - git
+  loop_control:
+    loop_var: component
+    label: "{{component}}"
+
+- name: Upgrade Pip
+  become: true
+  ansible.builtin.pip:
+    name: pip
+    extra_args: --upgrade
+
+- name: Install Python Docker
+  become: true
+  ansible.builtin.pip:
+    name: "{{item}}"
+    state: present
+  loop:
+    - requests
+    - docker
+    - docker-compose
+  
+- name: "Start Docker Service"
+  become: true
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true

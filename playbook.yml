@@ -1,0 +1,8 @@
+---
+- hosts: all
+  gather_facts: true
+  tasks:
+    - name: "Deploy Netbox Instance"
+      include_role:
+        name: netbox-deploy
+        
