@@ -1,0 +1,8 @@
+---
+- name: Backup Current Database
+  include_tasks:
+    file: backup/netbox_backup.yml
+
+- name: Deploy New Version
+  include_tasks:
+    file: deploy/netbox_deploy.yml

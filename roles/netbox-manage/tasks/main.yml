@@ -6,12 +6,12 @@
     apply:
         tags:
           - deploy
-          - update
+          - upgrade
           - backup
           - restore
   tags:
     - deploy
-    - update
+    - upgrade
     - backup
     - restore
   
@@ -41,3 +41,12 @@
         - restore
   tags:
     - restore
+
+- name: "Upgrade Netbox"
+  include_tasks:
+    file: "upgrade/netbox_update.yml"
+    apply:
+      tags:
+        - upgrade
+  tags:
+    - upgrade

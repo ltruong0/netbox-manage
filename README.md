@@ -37,4 +37,15 @@
     ```
 
 - `upgrade` : Upgrades NetBox
-> WIP : will add notes once complete
+    - executes a `backup` prior to deploying new Netbox version
+    - deploys version defined in `roles/netbox-manage/defaults/main.yml`
+    - for troubleshooting upgrades(https://github.com/netbox-community/netbox-docker/wiki/Updating)
+    ```
+    ansible-playbook playbook.yml -t upgrade
+    ```
+> Upgrade is simply a wrapper around `backup` and `deploy`
+
+# References
+---
+- https://github.com/netbox-community/netbox-docker#container-image-tags
+- https://github.com/netbox-community/netbox-docker/wiki/Updating

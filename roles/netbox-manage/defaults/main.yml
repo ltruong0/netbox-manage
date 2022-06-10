@@ -2,14 +2,16 @@
 # defaults file for netbox-deploy
 
 # netbox config
-NETBOX_VERSION: netboxcommunity/netbox:3.2.1
+NETBOX_VERSION: netboxcommunity/netbox:v3.2-1.6.1
 NETBOX_PORT: 8000
 
 # Version for https://github.com/netbox-community/netbox-docker.git (used to deploy)
+# make sure the netbox version above correlates with this (refer to https://github.com/netbox-community/netbox-docker#container-image-tags)
 NETBOX_DOCKER_VERSION: 1.6.1
 
 # postgres config
 POSTGRES_PASSWORD: J5brHrAXFLQSif0K
+# TODO: make restore/backups use this user/db
 POSTGRES_DB: netbox
 POSTGRES_USER: netbox
 

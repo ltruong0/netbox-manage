@@ -7,7 +7,7 @@
         name: netbox-manage
       tags:
         - deploy
-        - update
+        - upgrade
         - backup
         - restore
         
