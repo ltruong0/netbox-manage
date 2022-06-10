@@ -1,0 +1,5 @@
+---
+- name: Cleanup Restoration Files
+  ansible.builtin.file:
+    path: "{{ansible_user_dir}}/netbox.sql"
+    state: absent

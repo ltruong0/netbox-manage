@@ -1,0 +1,44 @@
+---
+- name: Get Backup Files
+  delegate_to: localhost
+  ansible.builtin.find:
+    paths: "{{role_path}}/files/backups/"
+  register: backup_files
+  when: latest_backup_path is not defined
+
+- name: Select Latest Backup
+  set_fact:
+    latest_backup_path: "{{ latest_backup.path }}"
+  vars:
+    latest_backup: "{{ backup_files.files | sort(attribute='mtime',reverse=true) | first }}"
+  when: latest_backup_path is not defined
+
+- name: Copy Backup to Remote Host
+  ansible.builtin.copy:
+    src: "{{latest_backup_path}}"
+    dest: "{{ansible_user_dir}}/netbox.sql"
+  when: latest_backup_path is defined
+  notify: 
+    - Cleanup Restoration Files
+
+- name: Drop the Existing Database
+  community.docker.docker_container_exec:
+    container: netbox-docker_postgres_1
+    tty: true
+    command: /bin/bash -l -c "psql -U netbox postgres -c 'drop database netbox WITH (FORCE)'"
+
+- name: Copy SQL to Postgres Container
+  ansible.builtin.shell: "docker cp {{ansible_user_dir}}/netbox.sql netbox-docker_postgres_1/:netbox.sql"
+
+- name: ReCreate Netbox Database
+  community.docker.docker_container_exec:
+    container: netbox-docker_postgres_1
+    tty: true
+    command: /bin/bash -l -c "psql -U netbox postgres -c 'create database netbox'"
+
+- name: Load Restoration SQL
+  community.docker.docker_container_exec:
+    container: netbox-docker_postgres_1
+    tty: true
+    command: psql -U netbox netbox -f netbox.sql
+    chdir: /

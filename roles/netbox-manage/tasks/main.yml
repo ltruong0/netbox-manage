@@ -3,6 +3,12 @@
 - name: "Install Pre-Reqs"
   include_tasks:
     file: "{{ansible_distribution | lower}}_pre-reqs.yml"
+    apply:
+        tags:
+          - deploy
+          - update
+          - backup
+          - restore
   tags:
     - deploy
     - update
@@ -26,3 +32,12 @@
         - backup
   tags:
     - backup
+
+- name: "Restore Netbox"
+  include_tasks:
+    file: "restore/netbox_restore.yml"
+    apply:
+      tags:
+        - restore
+  tags:
+    - restore

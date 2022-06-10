@@ -6737,7 +6737,7 @@ COPY public.auth_permission (id, name, content_type_id, codename) FROM stdin;
 --
 
 COPY public.auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
-1	pbkdf2_sha256$320000$A0V7gmMh3mD42xVb1Oe3zg$S9I74DhaWUOokBqM9n9BcxNnybUSJrfoXRjBxRGbxT0=	\N	t	admin			admin@example.com	t	t	2022-06-09 22:03:58.588779+00
+1	pbkdf2_sha256$320000$A0V7gmMh3mD42xVb1Oe3zg$S9I74DhaWUOokBqM9n9BcxNnybUSJrfoXRjBxRGbxT0=	2022-06-10 18:58:44.019676+00	t	admin			admin@example.com	t	t	2022-06-09 22:03:58.588779+00
 \.
 
 
@@ -7720,6 +7720,7 @@ COPY public.django_migrations (id, app, name, applied) FROM stdin;
 --
 
 COPY public.django_session (session_key, session_data, expire_date) FROM stdin;
+5lato7gkym9mbgianaalnru7qbzgaif0	.eJxVjEsKwjAUAO-StZS8xpePSy-gNwivyQuJYgpNCoJ4d1twoduZYV7C09qzXxsvvkRxEiAOv2yicOe6i8p9mp_Drrj2EqiXuQ6X6cahX3l5lNY2cP72f5NMLW8HE48QwXGQLJksq4CQIJHCaKQeJUSyowrWoraYpFGGtULrgF1ClEa8PznlOXE:1nzjqG:l9A-NyVeJ4bD3rKMlb4JJInaeAbZ4YlQwypWCDcZ89o	2022-06-24 18:58:44.022986+00
 \.
 
 
@@ -7896,6 +7897,8 @@ COPY public.extras_journalentry (last_updated, id, assigned_object_id, created, 
 --
 
 COPY public.extras_objectchange (id, "time", user_name, request_id, action, changed_object_id, related_object_id, object_repr, prechange_data, postchange_data, changed_object_type_id, related_object_type_id, user_id) FROM stdin;
+1	2022-06-10 18:59:03.051646+00	admin	bb482277-c295-4447-990b-1240a67c95b5	create	1	\N	192.168.1.1/32	\N	{"vrf": null, "role": "", "tags": [], "status": "active", "tenant": null, "address": "192.168.1.1/32", "created": "2022-06-10T18:59:03.033Z", "dns_name": "", "nat_inside": null, "description": "", "last_updated": "2022-06-10T18:59:03.033Z", "custom_fields": {}, "assigned_object_id": null, "assigned_object_type": null}	60	\N	1
+2	2022-06-10 19:01:56.108491+00	admin	53baa3ab-e23f-4c41-ab0d-e012e8a4bc23	create	2	\N	192.168.2.1/32	\N	{"vrf": null, "role": "", "tags": [], "status": "active", "tenant": null, "address": "192.168.2.1/32", "created": "2022-06-10T19:01:56.103Z", "dns_name": "", "nat_inside": null, "description": "", "last_updated": "2022-06-10T19:01:56.103Z", "custom_fields": {}, "assigned_object_id": null, "assigned_object_type": null}	60	\N	1
 \.
 
 
@@ -7968,6 +7971,8 @@ COPY public.ipam_fhrpgroupassignment (created, last_updated, id, interface_id, p
 --
 
 COPY public.ipam_ipaddress (created, last_updated, custom_field_data, id, address, status, role, assigned_object_id, dns_name, description, assigned_object_type_id, nat_inside_id, tenant_id, vrf_id) FROM stdin;
+2022-06-10 18:59:03.033805+00	2022-06-10 18:59:03.033827+00	{}	1	192.168.1.1	active		\N			\N	\N	\N	\N
+2022-06-10 19:01:56.103281+00	2022-06-10 19:01:56.103304+00	{}	2	192.168.2.1	active		\N			\N	\N	\N	\N
 \.
 
 
@@ -8858,7 +8863,7 @@ SELECT pg_catalog.setval('public.extras_journalentry_id_seq', 1, false);
 -- Name: extras_objectchange_id_seq; Type: SEQUENCE SET; Schema: public; Owner: netbox
 --
 
-SELECT pg_catalog.setval('public.extras_objectchange_id_seq', 1, false);
+SELECT pg_catalog.setval('public.extras_objectchange_id_seq', 2, true);
 
 
 --
@@ -8921,7 +8926,7 @@ SELECT pg_catalog.setval('public.ipam_fhrpgroupassignment_id_seq', 1, false);
 -- Name: ipam_ipaddress_id_seq; Type: SEQUENCE SET; Schema: public; Owner: netbox
 --
 
-SELECT pg_catalog.setval('public.ipam_ipaddress_id_seq', 1, false);
+SELECT pg_catalog.setval('public.ipam_ipaddress_id_seq', 2, true);
 
 
 --

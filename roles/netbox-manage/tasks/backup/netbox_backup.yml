@@ -14,7 +14,3 @@
     dest: "{{role_path}}/files/backups/netbox-{{timestamp}}.sql"
   vars:
     timestamp: "{{ansible_date_time.iso8601_micro}}"
-
-- name: debug
-  debug:
-    var: result
