@@ -4,5 +4,10 @@
   tasks:
     - name: "Deploy Netbox Instance"
       include_role:
-        name: netbox-deploy
+        name: netbox-manage
+      tags:
+        - deploy
+        - update
+        - backup
+        - restore
         

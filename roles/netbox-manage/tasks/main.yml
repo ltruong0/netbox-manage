@@ -1,0 +1,28 @@
+---
+# tasks file for netbox-deploy
+- name: "Install Pre-Reqs"
+  include_tasks:
+    file: "{{ansible_distribution | lower}}_pre-reqs.yml"
+  tags:
+    - deploy
+    - update
+    - backup
+    - restore
+  
+- name: "Deploy Netbox"
+  include_tasks:
+    file: "deploy/netbox_deploy.yml"
+    apply:
+      tags:
+        - deploy
+  tags:
+    - deploy
+    
+- name: "Backup Netbox"
+  include_tasks:
+    file: "backup/netbox_backup.yml"
+    apply:
+      tags:
+        - backup
+  tags:
+    - backup

@@ -5,6 +5,9 @@
 NETBOX_VERSION: netboxcommunity/netbox:3.2.1
 NETBOX_PORT: 8000
 
+# Version for https://github.com/netbox-community/netbox-docker.git (used to deploy)
+NETBOX_DOCKER_VERSION: 1.6.1
+
 # postgres config
 POSTGRES_PASSWORD: J5brHrAXFLQSif0K
 POSTGRES_DB: netbox
@@ -43,12 +46,10 @@ NAPALM_USERNAME: ''
 REDIS_CACHE_DATABASE: 1
 REDIS_CACHE_HOST: redis-cache
 REDIS_CACHE_INSECURE_SKIP_TLS_VERIFY: false
-REDIS_CACHE_PASSWORD: t4Ph722qJ5QHeQ1qfu36
 REDIS_CACHE_SSL: false
 REDIS_DATABASE: 0
 REDIS_HOST: redis
 REDIS_INSECURE_SKIP_TLS_VERIFY: false
-REDIS_PASSWORD: H733Kdjndks81
 REDIS_SSL: false
 RELEASE_CHECK_URL: https://api.github.com/repos/netbox-community/netbox/releases
 SECRET_KEY: r8OwDznj!!dci#P9ghmRfdu1Ysxm0AiPeDCQhKE+N_rClfWNj

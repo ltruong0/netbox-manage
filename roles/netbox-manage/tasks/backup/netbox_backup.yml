@@ -1,0 +1,20 @@
+---
+- name: Execute PG SQL Backup
+  community.docker.docker_container_exec:
+    container: netbox-docker_postgres_1
+    tty: true
+    command: /bin/bash -l -c "pg_dump --dbname=postgresql://netbox:J5brHrAXFLQSif0K@localhost/netbox"
+    chdir: /root
+  register: result
+
+- name: Output PG DB Backup
+  delegate_to: localhost
+  ansible.builtin.copy:
+    content: "{{result.stdout}}"
+    dest: "{{role_path}}/files/backups/netbox-{{timestamp}}.sql"
+  vars:
+    timestamp: "{{ansible_date_time.iso8601_micro}}"
+
+- name: debug
+  debug:
+    var: result

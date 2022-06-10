@@ -3,8 +3,7 @@
   ansible.builtin.git:
     repo: 'https://github.com/netbox-community/netbox-docker.git'
     dest: "{{ansible_user_dir}}/netbox-docker"
-    version: 1.6.1
-
+    version: "{{NETBOX_DOCKER_VERSION}}"
 
 - name: Update Default Env Configs
   ansible.builtin.template:
@@ -26,4 +25,5 @@
   community.docker.docker_compose:
     project_src: "{{ansible_user_dir}}/netbox-docker"
     files:
+      - docker-compose.override.yml
       - docker-compose.yml
