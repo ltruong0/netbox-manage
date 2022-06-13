@@ -21,24 +21,33 @@
   notify: 
     - Cleanup Restoration Files
 
+- name: Find Postgres Container Name
+  ansible.builtin.shell: "docker ps --format {% raw %} {{.Names}} {% endraw %} | grep postgres"
+  register: find_postgres
+  ignore_errors: true 
+
+- name: Register Container Name for Postgres
+  ansible.builtin.set_fact:
+    postgres_container_name: "{{find_postgres.stdout | default('netbox-docker_postgres_1', true)}}"
+
 - name: Drop the Existing Database
   community.docker.docker_container_exec:
-    container: netbox-docker_postgres_1
+    container: "{{postgres_container_name}}"
     tty: true
-    command: /bin/bash -l -c "psql -U netbox postgres -c 'drop database netbox WITH (FORCE)'"
+    command: /bin/bash -l -c "psql -U {{POSTGRES_USER}} postgres -c 'drop database {{POSTGRES_DB}} WITH (FORCE)'"
 
 - name: Copy SQL to Postgres Container
-  ansible.builtin.shell: "docker cp {{ansible_user_dir}}/netbox.sql netbox-docker_postgres_1/:netbox.sql"
+  ansible.builtin.shell: "docker cp {{ansible_user_dir}}/netbox.sql {{postgres_container_name}}/:netbox.sql"
 
 - name: ReCreate Netbox Database
   community.docker.docker_container_exec:
-    container: netbox-docker_postgres_1
+    container: "{{postgres_container_name}}"
     tty: true
-    command: /bin/bash -l -c "psql -U netbox postgres -c 'create database netbox'"
+    command: /bin/bash -l -c "psql -U {{POSTGRES_USER}} postgres -c 'create database {{POSTGRES_DB}}'"
 
 - name: Load Restoration SQL
   community.docker.docker_container_exec:
-    container: netbox-docker_postgres_1
+    container: "{{postgres_container_name}}"
     tty: true
-    command: psql -U netbox netbox -f netbox.sql
+    command: "psql -U {{POSTGRES_USER}} {{POSTGRES_DB}} -f netbox.sql"
     chdir: /

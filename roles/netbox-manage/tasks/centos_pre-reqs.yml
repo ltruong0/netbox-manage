@@ -5,7 +5,7 @@
     name: yum-utils
     state: present
 
-- name: "Configuring docker-ce repo"
+- name: Configure Docker Repo
   become: true
   get_url:
     url: https://download.docker.com/linux/centos/docker-ce.repo
@@ -36,7 +36,7 @@
     name: pip
     extra_args: --upgrade
 
-- name: Install Python Docker
+- name: Install Python Requisites
   become: true
   ansible.builtin.pip:
     name: "{{item}}"
