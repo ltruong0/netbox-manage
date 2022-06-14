@@ -1,0 +1,73 @@
+---
+- name: Create temporary work directory
+  ansible.builtin.tempfile:
+    state: directory
+    suffix: work
+  register: work_dir
+  notify:
+    - Clean Up Work Dir
+
+- debug:
+    var: work_dir.path
+
+- name: Copy Files to Work Dir
+  ansible.builtin.shell: "{{item}}"
+  loop:
+    - "docker cp netbox-docker_netbox_1:/opt/netbox/netbox/netbox/settings.py {{work_dir.path}}/settings.py"
+    - "docker cp netbox-docker_netbox_1:/opt/netbox/netbox/netbox/urls.py {{work_dir.path}}/urls.py"
+
+- name: "Modify Django settings.py in Work Dir"
+  ansible.builtin.lineinfile:
+    path: "{{work_dir.path}}/settings.py"
+    line: "{{config_line}}"
+    state: present
+  loop:
+    - INSTALLED_APPS.append('mozilla_django_oidc')
+    - AUTHENTICATION_BACKENDS.append('mozilla_django_oidc.auth.OIDCAuthenticationBackend')
+    - OIDC_RP_CLIENT_ID = 'YOUR CLIENT ID'
+    - OIDC_RP_CLIENT_SECRET = 'YOUR CLIENT SECRET'
+    - OIDC_OP_AUTHORIZATION_ENDPOINT = 'https://myapp.onelogin.com/oidc/2/auth'
+    - OIDC_OP_TOKEN_ENDPOINT = 'https://myapp.onelogin.com/oidc/2/token'
+    - OIDC_OP_USER_ENDPOINT = 'https://myapp.onelogin.com/oidc/2/me'
+    - OIDC_RP_SIGN_ALGO = 'RS256'
+    - OIDC_OP_JWKS_ENDPOINT = 'https://contentlab-dev.onelogin.com/oidc/2/certs'
+    - LOGIN_REDIRECT_URL = '/'
+    - LOGOUT_REDIRECT_URL = '/'
+  loop_control:
+    loop_var: config_line
+
+- name: "Modify Django urls.py in Work Dir"
+  ansible.builtin.lineinfile:
+    path: "{{work_dir.path}}/urls.py"
+    line: urlpatterns.append(re_path(r'^oidc/', include('mozilla_django_oidc.urls')))
+    state: present
+  loop:
+
+  loop_control:
+    loop_var: config_line
+
+- name: Copy From Work Dir to Container
+  ansible.builtin.shell: "{{item}}"
+  loop:
+    - "docker cp {{work_dir.path}}/settings.py netbox-docker_netbox_1:/opt/netbox/netbox/netbox/settings.py"
+    - "docker cp {{work_dir.path}}/urls.py netbox-docker_netbox_1:/opt/netbox/netbox/netbox/urls.py"
+
+
+
+# - name: Add Djang OIDC
+#   community.docker.docker_container_exec:
+#     container: netbox-docker_netbox_1
+#     tty: true
+#     command: "{{item}}"
+#   loop:
+#     - echo "INSTALLED_APPS.APPEND('mozilla_django_oidc')" >> /opt/netbox/netbox/netbox/settings.py
+#     - echo "AUTHENTICATION_BACKENDS = AUTHENTICATION_BACKENDS + ('mozilla_django_oidc.auth.OIDCAuthenticationBackend',)" >> /opt/netbox/netbox/netbox/settings.py
+#     - echo "OIDC_RP_CLIENT_ID = 'YOUR CLIENT ID'" >> /opt/netbox/netbox/netbox/settings.py
+#     - echo "OIDC_RP_CLIENT_SECRET = 'YOUR CLIENT SECRET'" >> /opt/netbox/netbox/netbox/settings.py
+#     - echo "OIDC_OP_AUTHORIZATION_ENDPOINT = 'https://myapp.onelogin.com/oidc/2/auth'" >> /opt/netbox/netbox/netbox/settings.py
+#     - echo "OIDC_OP_TOKEN_ENDPOINT = 'https://myapp.onelogin.com/oidc/2/token'" >> /opt/netbox/netbox/netbox/settings.py
+#     - echo "OIDC_OP_USER_ENDPOINT = 'https://myapp.onelogin.com/oidc/2/me'" >> /opt/netbox/netbox/netbox/settings.py
+#     - echo "OIDC_RP_SIGN_ALGO = 'RS256'" >> /opt/netbox/netbox/netbox/settings.py
+#     - echo "OIDC_OP_JWKS_ENDPOINT = 'https://contentlab-dev.onelogin.com/oidc/2/certs'" >> /opt/netbox/netbox/netbox/settings.py
+#     - echo "LOGIN_REDIRECT_URL = '/'" >> /opt/netbox/netbox/netbox/settings.py
+#     - echo "LOGOUT_REDIRECT_URL = '/'" >> /opt/netbox/netbox/netbox/settings.py
